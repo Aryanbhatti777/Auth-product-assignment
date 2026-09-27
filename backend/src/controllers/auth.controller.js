@@ -2,6 +2,7 @@ import { validationResult } from "express-validator"
 import userModel from "../models/user.model.js";
 import bcrypt from 'bcryptjs'
 import generateTokens from "../utils/generateToken.util.js";
+import { verifyRefreshToken } from "../utils/verifyToken.util.js";
 
 export const Register = async (req, res) => {
     
@@ -107,4 +108,121 @@ export const Login = async (req, res) => {
         })
     }
 
+}
+
+export const Refresh = async (req, res) => {
+    
+    try {
+        
+        const token = req.cookies.refreshToken;
+
+        if (!token) {
+            return res.status(401).json({
+                message: "Refresh Token not found."
+            })
+        }
+
+        const decoded = verifyRefreshToken(token);
+
+        const user = await userModel.findById(decoded.id);
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            })
+        }
+
+        const tokenMatch = token === user.refreshToken;
+
+        if (!tokenMatch) {
+
+            user.refreshToken = null;
+            await user.save();
+
+            return res.status(409).json({
+                message: "Token not authorized"
+            })
+        }
+
+        const { accessToken, refreshToken } = generateTokens({ id: user._id });
+
+        res.cookie("refreshToken", refreshToken, { httpOnly: true });
+
+        user.refreshToken = refreshToken;
+        await user.save();
+
+        return res.status(200).json({
+            message: "Refresh successfull",
+            user,
+            accessToken
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal server error",
+            error: error.message
+        })
+    }
+}
+
+export const Logout = async (req, res) => {
+    
+    try {
+        
+        const Rtoken = req.cookies.refreshToken;
+
+        if (!Rtoken) {
+            return res.status(401).json({
+                message: "Unauthorized access"
+            })
+        }
+        const decoded = verifyRefreshToken(Rtoken);
+
+        const user = await userModel.findById(decoded.id);
+
+        user.refreshToken = null
+
+        await user.save();
+
+        res.clearCookie("refreshToken")
+
+        return res.status(200).json({
+            message: "Logged out successfully",
+            user
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal server error",
+            error: error.message
+        })
+    }
+
+}
+
+export const getMe = async (req, res) => {
+
+    try {
+        
+        const user = req.user;
+
+        if (!user) {
+
+            return res.status(401).json({
+                message: "Unauthorized access",
+            })
+        }
+
+        return res.status(200).json({
+            message: "Profile fetched successfully",
+            user
+        }
+        )
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal server error",
+            error: error.message
+        })
+    }
 }
