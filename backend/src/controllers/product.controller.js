@@ -93,6 +93,12 @@ export const getProduct = async (req, res) => {
 export const updateProduct = async (req, res) => {
 
     try {
+
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array() })
+        }
         
         const { name, price, description, stock, category } = req.body;
 

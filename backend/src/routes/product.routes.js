@@ -2,13 +2,14 @@ import Router from 'express'
 import authenticateUser from '../middlewares/auth.middleware.js';
 import upload from '../config/multer.config.js';
 import { createProduct, deleteProduct, getAllProducts, getProduct, updateProduct } from '../controllers/product.controller.js';
+import { productValidation } from '../validation/product.validation.js';
 
 const productRouter = Router();
 
-productRouter.post("/create", authenticateUser, upload.single('image'), createProduct);
+productRouter.post("/create", authenticateUser, upload.single('image'),productValidation, createProduct);
 productRouter.get("/", getAllProducts);
 productRouter.get("/:id", getProduct);
-productRouter.put("/update/:id", authenticateUser, updateProduct);
+productRouter.put("/update/:id", authenticateUser,productValidation, updateProduct);
 productRouter.delete("/delete/:id", authenticateUser, deleteProduct);
 
 export default productRouter;
