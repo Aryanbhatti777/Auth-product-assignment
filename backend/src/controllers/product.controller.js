@@ -49,3 +49,43 @@ export const createProduct = async (req, res) => {
         })
     }
 }
+
+export const getAllProducts = async (req, res) => {
+    
+    try {
+        
+        const products = await productModel.find();
+
+        return res.status(200).json({
+            message: "Products fetched successfully",
+            products
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal server error",
+            error: error.message
+        })
+    }
+}
+
+export const getProduct = async (req, res) => {
+
+    try {
+        
+        const { id } = req.params;
+
+        const product = await productModel.findById(id);
+
+        return res.status(200).json({
+            message: "Product fetched successfully",
+            product
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal server error",
+            error: error.message
+        })
+    }
+}
