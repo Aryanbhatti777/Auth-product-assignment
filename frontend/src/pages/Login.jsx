@@ -8,6 +8,7 @@ const Login = ()  => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
 
@@ -25,7 +26,7 @@ const Login = ()  => {
 
       setAccessToken(res.data.accessToken);
       setUser(res.data.user);
-
+      reset()
       navigate("/home",{ replace: true })
       
     } catch (error) {

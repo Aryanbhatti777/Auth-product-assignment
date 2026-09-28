@@ -2,13 +2,15 @@ import { useContext, useEffect } from "react";
 
 import { AuthContext } from "../context/AuthContext";
 import useApi from "../utils/axiosInstance.utils";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 export default function Navbar() {
     
     const api = useApi();
     
-    const { user, setUser, setAccessToken, loading } = useContext(AuthContext);
+  const { user, setUser, setAccessToken, loading } = useContext(AuthContext);
+  
+  const navigate = useNavigate()
     const Logout = async () => {
     
             try {
@@ -17,7 +19,7 @@ export default function Navbar() {
                 setUser(null);
                 setAccessToken(null);
     
-                return <Navigate to={"/"} replace/>
+                navigate("/",{replace: true})
             } catch (error) {
                 
             }
@@ -47,7 +49,7 @@ export default function Navbar() {
 
         {/* Logo */}
         <Link
-          to="/"
+          to="/home"
           className="text-xl font-bold tracking-tight text-gray-900"
         >
           MyApp
@@ -61,6 +63,7 @@ export default function Navbar() {
             <>
               {user ? (
                 <>
+                
                   <span className="hidden text-sm font-medium text-gray-700 sm:block">
                     {user.name || user.email}
                   </span>
