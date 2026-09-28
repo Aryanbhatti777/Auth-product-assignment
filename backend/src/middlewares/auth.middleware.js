@@ -9,7 +9,7 @@ const authenticateUser = async (req, res, next) => {
 
     if (!token) {
 
-        Logout()
+        
         return res.status(401).json({
             message: "Unauthorized access"
         })

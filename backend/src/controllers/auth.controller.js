@@ -97,7 +97,9 @@ export const Login = async (req, res) => {
 
         return res.status(200).json({
             message: "Logged in successfully",
-            user,
+            user: {
+                email,
+            },
             accessToken
         })
 
@@ -144,7 +146,7 @@ export const Refresh = async (req, res) => {
             })
         }
 
-        const { accessToken, refreshToken } = generateTokens({ id: user._id });
+        const { accessToken, refreshToken } = generateTokens(user._id);
 
         res.cookie("refreshToken", refreshToken, { httpOnly: true });
 

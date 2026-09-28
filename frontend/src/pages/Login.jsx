@@ -1,5 +1,8 @@
 import { useForm } from "react-hook-form";
 import useApi from "../utils/axiosInstance.utils";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { Navigate, useNavigate } from "react-router";
 
 const Login = ()  => {
   const {
@@ -10,9 +13,20 @@ const Login = ()  => {
 
   const api = useApi();
 
-  const onSubmit = (data) => {
+  const navigate = useNavigate()
+
+  const {setAccessToken, setUser} = useContext(AuthContext)
+
+  const onSubmit = async(data) => {
   
     try {
+      
+      const res = await api.post("/api/auth/login", data);
+
+      setAccessToken(res.data.accessToken);
+      setUser(res.data.user);
+
+      navigate("/home",{ replace: true })
       
     } catch (error) {
       console.log(error)
@@ -44,6 +58,7 @@ const Login = ()  => {
 
             <input
               type="email"
+              name="email"
               placeholder="Enter your email"
               {...register("email", {
                 required: "Email is required",
@@ -65,16 +80,11 @@ const Login = ()  => {
                 Password
               </label>
 
-              <a
-                href="/forgot-password"
-                className="text-sm font-medium text-gray-600 hover:text-black"
-              >
-                Forgot password?
-              </a>
             </div>
 
             <input
               type="password"
+              name="password"
               placeholder="Enter your password"
               {...register("password", {
                 required: "Password is required",

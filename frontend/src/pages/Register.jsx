@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../context/AuthContext";
 import useApi from "../utils/axiosInstance.utils";
-import { Navigate } from "react-router";
+import { Navigate, useNavigate } from "react-router";
 
 const Register = () => {
 
@@ -17,7 +17,9 @@ const Register = () => {
 
   const api = useApi();
 
-  const { setAccessToken, setUser, setLoading} = useContext(AuthContext)
+  const { setAccessToken, setUser, setLoading } = useContext(AuthContext)
+  
+  const navigate = useNavigate()
   
   const onSubmit = async(data) => {
     
@@ -28,7 +30,7 @@ const Register = () => {
         setUser(res.data.newUser);
         setLoading(false)
 
-        return <Navigate to={"/home"} replace />
+        navigate("/home",{ replace: true})
 
       } catch (error) {
         console.log(error)

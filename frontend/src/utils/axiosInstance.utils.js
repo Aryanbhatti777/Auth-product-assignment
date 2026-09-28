@@ -4,8 +4,9 @@ import { AuthContext } from '../context/AuthContext.jsx'
 
 const useApi = () => {
 
-    const { accessToken, setAccessToken, setUser } = useContext(AuthContext)
+    const { accessToken, setAccessToken, setUser, setLoading, loading } = useContext(AuthContext)
 
+    
     const api = axios.create({
         baseURL: import.meta.env.VITE_BACKEND_URL,
         withCredentials: true
@@ -29,14 +30,17 @@ const useApi = () => {
                 
                 try {
                     
-                    const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/refresh`, {}, { withCredentials: true });
+                    const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/refresh`,{},{withCredentials: true});
 
                     setAccessToken(res.data.accessToken);
-                    return api(error.config)
+setLoading(false)
+                    setUser(res.data.user)
+                    
+                    
                 } catch (error) {
                     setAccessToken(null);
                     setUser(null);
-                    return Promise.reject(refreshError)
+                    return Promise.reject(error)
                 }
             }
             return Promise.reject(error)

@@ -9,9 +9,6 @@ export const AuthProvider = ({ children }) => {
     const [accessToken, setAccessToken] = useState(null);
     const [loading, setLoading] = useState(true)
 
-
-    console.log(user, accessToken)
-
     return (
         <AuthContext.Provider value={{ user, setUser, accessToken, setAccessToken,loading, setLoading}}>
             {children}

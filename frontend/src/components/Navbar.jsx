@@ -29,7 +29,8 @@ export default function Navbar() {
             
             const res = await api.get("/api/auth/getMe");
 
-            console.log(res.data)
+          setUser(res.data.user)
+          console.log(res)
         } catch (error) {
             console.log(error)
         }
@@ -39,6 +40,7 @@ export default function Navbar() {
         getProfile();
     },[])
 
+  // if(loading) return "Loading..."
   return (
     <nav className="border-b border-gray-200 bg-white">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -51,33 +53,11 @@ export default function Navbar() {
           MyApp
         </Link>
 
-        {/* Navigation */}
-        <div className="hidden items-center gap-8 md:flex">
-          <Link
-            to="/"
-            className="text-sm font-medium text-gray-600 transition hover:text-black"
-          >
-            Home
-          </Link>
-
-          <Link
-            to="/about"
-            className="text-sm font-medium text-gray-600 transition hover:text-black"
-          >
-            About
-          </Link>
-
-          <Link
-            to="/contact"
-            className="text-sm font-medium text-gray-600 transition hover:text-black"
-          >
-            Contact
-          </Link>
-        </div>
+        
 
         {/* Auth */}
         <div className="flex items-center gap-3">
-          {!loading && (
+          {(
             <>
               {user ? (
                 <>
@@ -95,7 +75,7 @@ export default function Navbar() {
               ) : (
                 <>
                   <Link
-                    to="/login"
+                    to="/"
                     className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
                   >
                     Login
