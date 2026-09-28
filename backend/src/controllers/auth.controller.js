@@ -34,7 +34,12 @@ export const Register = async (req, res) => {
 
         const { accessToken, refreshToken } = generateTokens(newUser._id);
 
-        res.cookie("refreshToken", refreshToken, { httpOnly: true })
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
 
         newUser.refreshToken = refreshToken;
         
@@ -90,7 +95,12 @@ export const Login = async (req, res) => {
 
         const { accessToken, refreshToken } = generateTokens(user._id);
 
-        res.cookie("refreshToken", refreshToken, { httpOnly: true })
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
 
         user.refreshToken = refreshToken;
         await user.save();
@@ -148,7 +158,12 @@ export const Refresh = async (req, res) => {
 
         const { accessToken, refreshToken } = generateTokens(user._id);
 
-        res.cookie("refreshToken", refreshToken, { httpOnly: true });
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
 
         user.refreshToken = refreshToken;
         await user.save();
@@ -188,7 +203,11 @@ export const Logout = async (req, res) => {
 
         await user.save();
 
-        res.clearCookie("refreshToken")
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none"
+        })
 
         return res.status(200).json({
             message: "Logged out successfully",
