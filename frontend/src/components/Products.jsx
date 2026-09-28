@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import useApi from "../utils/axiosInstance.utils";
 import { useNavigate } from "react-router";
+import { AuthContext } from "../context/AuthContext";
 
 
 const Products = () => {
@@ -9,6 +10,7 @@ const Products = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const {user} = useContext(AuthContext)
 
     const navigate = useNavigate();
 
@@ -204,29 +206,31 @@ const Products = () => {
                                     </div>
 
                                     {/* Edit & Delete */}
-                                    <div className="flex gap-3 mt-4">
+                                    {!user ? "" : (
+                                        <div className="flex gap-3 mt-4">
 
-                                        <button
-                                            onClick={() =>
-                                                navigate(
-                                                    `/home/editProduct/${product._id}`
-                                                )
-                                            }
-                                            className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition"
-                                        >
-                                            Edit
-                                        </button>
+                                            <button
+                                                onClick={() =>
+                                                    navigate(
+                                                        `/home/editProduct/${product._id}`
+                                                    )
+                                                }
+                                                className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition"
+                                            >
+                                                Edit
+                                            </button>
 
-                                        <button
-                                            onClick={() =>
-                                                deleteProduct(product._id)
-                                            }
-                                            className="flex-1 bg-red-500 text-white py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition"
-                                        >
-                                            Delete
-                                        </button>
+                                            <button
+                                                onClick={() =>
+                                                    deleteProduct(product._id)
+                                                }
+                                                className="flex-1 bg-red-500 text-white py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition"
+                                            >
+                                                Delete
+                                            </button>
 
-                                    </div>
+                                        </div>
+                                    )}
 
                                 </div>
 

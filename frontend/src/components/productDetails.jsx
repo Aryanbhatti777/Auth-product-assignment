@@ -147,16 +147,6 @@ const ProductDetails = () => {
                                 </div>
                             </div>
 
-                            {/* Action */}
-                            <button
-                                disabled={product.stock <= 0}
-                                className="mt-8 w-full bg-black text-white py-3.5 rounded-xl font-medium hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition"
-                            >
-                                {product.stock > 0
-                                    ? "Add to Cart"
-                                    : "Out of Stock"}
-                            </button>
-
                         </div>
                     </div>
                 </div>

@@ -5,6 +5,7 @@ import Home from "../pages/Home.jsx";
 import CreateProduct from "../components/CreateProduct.jsx";
 import Products from "../components/Products.jsx";
 import ProductDetails from "../components/productDetails.jsx";
+import EditProduct from "../components/EditProduct.jsx";
 
 
 const router = createBrowserRouter([
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
             {
                 path: "/home/productDetails/:id",
                 element: <ProductDetails/>
+            },
+            {
+                path: "/home/editProduct/:id",
+                element: <EditProduct/>
             }
         ]
     }

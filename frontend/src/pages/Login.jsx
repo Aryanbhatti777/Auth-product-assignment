@@ -25,7 +25,6 @@ const Login = ()  => {
       const res = await api.post("/api/auth/login", data);
 
       setAccessToken(res.data.accessToken);
-      setUser(res.data.user);
       reset()
       navigate("/home",{ replace: true })
       

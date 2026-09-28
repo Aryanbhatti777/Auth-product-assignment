@@ -25,24 +25,8 @@ export default function Navbar() {
             }
     }
     
-    const getProfile = async() => {
-
-        try {
-            
-            const res = await api.get("/api/auth/getMe");
-
-          setUser(res.data.user)
-          console.log(res)
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    useEffect(() => {
-        getProfile();
-    },[])
-
-  // if(loading) return "Loading..."
+  
+  if(loading) return <p className="text-center">Loading...</p>
   return (
     <nav className="border-b border-gray-200 bg-white">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
