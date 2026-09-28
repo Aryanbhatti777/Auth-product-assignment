@@ -73,6 +73,10 @@ export const getProduct = async (req, res) => {
 
     try {
         
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array()})
+        }
         const { id } = req.params;
 
         const product = await productModel.findById(id);
@@ -132,6 +136,12 @@ export const deleteProduct = async (req, res) => {
 
     try {
         
+        const errors = validationResult(req);
+        
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array() })
+        }
+
         const { id } = req.params;
 
         const deletedProduct = await productModel.findByIdAndDelete(id);

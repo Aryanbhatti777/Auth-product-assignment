@@ -178,6 +178,8 @@ export const Logout = async (req, res) => {
         }
         const decoded = verifyRefreshToken(Rtoken);
 
+        req.user = null
+
         const user = await userModel.findById(decoded.id);
 
         user.refreshToken = null

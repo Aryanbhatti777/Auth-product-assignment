@@ -1,4 +1,4 @@
-import { body } from 'express-validator'
+import { body, param } from 'express-validator'
 
 export const productValidation = [
     body('name')
@@ -18,4 +18,10 @@ export const productValidation = [
         .trim().notEmpty().withMessage("Category is required.")
         .isString().withMessage("Invalid input"),
 
+]
+
+export const paramValidation = [
+    param('id')
+        .exists().withMessage("id is required")
+        .isMongoId().withMessage("Invalid id")
 ]
