@@ -10,13 +10,13 @@ app.use(express.json())
 
 app.use(cookieParser())
 
-const corsOptons = {
+const corsOptions = {
     origin: config.FRONTEND_URL,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }
 
-app.use(cors())
+app.use(cors(corsOptions))
 
 app.use("/api/auth", authRouter)
 

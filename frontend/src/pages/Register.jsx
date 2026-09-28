@@ -1,6 +1,11 @@
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
+import { AuthContext } from "../context/AuthContext";
+import useApi from "../utils/axiosInstance.utils";
+import { Navigate } from "react-router";
 
 const Register = () => {
+
   const {
     register,
     handleSubmit,
@@ -10,9 +15,28 @@ const Register = () => {
 
   const password = watch("password");
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const api = useApi();
+
+  const { setAccessToken, setUser, setLoading} = useContext(AuthContext)
+  
+  const onSubmit = async(data) => {
+    
+    try {
+
+        const res = await api.post("/api/auth/register", data)
+        setAccessToken(res.data.accessToken);
+        setUser(res.data.newUser);
+        setLoading(false)
+
+        return <Navigate to={"/home"} replace />
+
+      } catch (error) {
+        console.log(error)
+      }
+    
   };
+
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -32,6 +56,7 @@ const Register = () => {
 
             <input
               type="text"
+              name="name"
               placeholder="Enter your name"
               {...register("name", {
                 required: "Name is required",
@@ -50,9 +75,11 @@ const Register = () => {
 
             <input
               type="email"
+              name="email"
               placeholder="Enter your email"
               {...register("email", {
                 required: "Email is required",
+                pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
               })}
               className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-black"
             />
@@ -70,6 +97,7 @@ const Register = () => {
 
             <input
               type="password"
+              name="password"
               placeholder="Enter your password"
               {...register("password", {
                 required: "Password is required",
@@ -124,13 +152,13 @@ const Register = () => {
 
         <p className="mt-6 text-center text-sm text-gray-500">
           Already have an account?{" "}
-          <a href="/login" className="font-semibold text-black">
+          <a href="/" className="font-semibold text-black">
             Login
           </a>
         </p>
       </div>
     </div>
   );
-}
+};
 
 export default Register;
