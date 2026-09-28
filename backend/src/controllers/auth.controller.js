@@ -32,7 +32,7 @@ export const Register = async (req, res) => {
             password: hashedPassword,
         })
 
-        const { accessToken, refreshToken } = generateTokens({id: newUser._id});
+        const { accessToken, refreshToken } = generateTokens(newUser._id);
 
         res.cookie("refreshToken", refreshToken, { httpOnly: true })
 
