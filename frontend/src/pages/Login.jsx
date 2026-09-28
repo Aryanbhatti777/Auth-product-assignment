@@ -29,7 +29,11 @@ const Login = ()  => {
       navigate("/home",{ replace: true })
       
     } catch (error) {
-      console.log(error)
+      console.log(error);
+      alert(
+        error.response?.data?.message ||
+        "Failed to delete product"
+      );
     }
   };
 
