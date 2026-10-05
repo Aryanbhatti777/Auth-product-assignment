@@ -108,9 +108,9 @@ const Products = () => {
                     {/* Create Product */}
                     <button
                         onClick={() => navigate("/home/createProduct")}
-                        className="bg-black text-white px-5 py-2.5 rounded-lg hover:bg-gray-800 transition"
+                        className={user ? "bg-black text-white px-5 py-2.5 rounded-lg hover:bg-gray-800 transition" : ""}
                     >
-                        + Add Product
+                        {user ? "+ Add Product" : "" }
                     </button>
 
                 </div>
