@@ -9,23 +9,37 @@ import { AuthContext } from '../context/AuthContext';
 const Home = () => {
 
   const api = useApi();
-  const { setUser, setLoading } = useContext(AuthContext);
+  const { user, loading, setUser, setLoading } = useContext(AuthContext);
   
   const getProfile = async () => {
 
     try {
-
+      setLoading(true);
       const res = await api.get("/api/auth/getMe", { withCredentials: true });
       setUser(res.data.user)
-      setLoading(false)
     } catch (error) {
       console.log(error)
+      setUser(null)
+    } finally {
+      setLoading(false)
     }
   }
 
   useEffect(() => {
     getProfile();
   },[])
+
+  if (loading && !user) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="h-10 w-10 mx-auto border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-600">Loading your account...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
       <>
       <Navbar />

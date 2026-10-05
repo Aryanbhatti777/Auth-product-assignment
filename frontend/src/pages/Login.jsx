@@ -1,8 +1,8 @@
 import { useForm } from "react-hook-form";
 import useApi from "../utils/axiosInstance.utils";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { Navigate, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 const Login = ()  => {
   const {
@@ -13,27 +13,29 @@ const Login = ()  => {
   } = useForm();
 
   const api = useApi();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const {setAccessToken, setUser} = useContext(AuthContext)
+  const { setAccessToken, setUser } = useContext(AuthContext);
 
   const onSubmit = async(data) => {
-  
     try {
-      
+      setIsSubmitting(true);
       const res = await api.post("/api/auth/login", data);
 
       setAccessToken(res.data.accessToken);
-      reset()
-      navigate("/home",{ replace: true })
-      
+      setUser(res.data.user || null);
+      reset();
+      navigate("/home", { replace: true });
     } catch (error) {
       console.log(error);
       alert(
         error.response?.data?.message ||
         "Failed to delete product"
       );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -106,9 +108,10 @@ const Login = ()  => {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full rounded-lg bg-black py-3 font-semibold text-white transition hover:bg-gray-800 active:scale-[0.99] cursor-pointer"
+            disabled={isSubmitting}
+            className="w-full rounded-lg bg-black py-3 font-semibold text-white transition hover:bg-gray-800 active:scale-[0.99] cursor-pointer disabled:cursor-not-allowed disabled:opacity-70"
           >
-            Login
+            {isSubmitting ? "Logging in..." : "Login"}
           </button>
         </form>
 

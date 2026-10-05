@@ -1,8 +1,8 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../context/AuthContext";
 import useApi from "../utils/axiosInstance.utils";
-import { Navigate, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 const Register = () => {
 
@@ -16,30 +16,30 @@ const Register = () => {
   const password = watch("password");
 
   const api = useApi();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { setAccessToken, setUser, setLoading } = useContext(AuthContext)
   
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   
   const onSubmit = async(data) => {
-    
     try {
+      setIsSubmitting(true);
+      const res = await api.post("/api/auth/register", data)
+      setAccessToken(res.data.accessToken);
+      setUser(res.data.newUser);
+      setLoading(false);
 
-        const res = await api.post("/api/auth/register", data)
-        setAccessToken(res.data.accessToken);
-        setUser(res.data.newUser);
-        setLoading(false)
-
-        navigate("/home",{ replace: true})
-
-      } catch (error) {
+      navigate("/home", { replace: true });
+    } catch (error) {
       console.log(error)
       alert(
         error.response?.data?.message ||
         "Failed to delete product"
       );
-      }
-    
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   
@@ -150,9 +150,10 @@ const Register = () => {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full rounded-lg bg-black py-3 font-semibold text-white transition hover:bg-gray-800"
+            disabled={isSubmitting}
+            className="w-full rounded-lg bg-black py-3 font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-70"
           >
-            Create Account
+            {isSubmitting ? "Creating account..." : "Create Account"}
           </button>
         </form>
 

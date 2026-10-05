@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import useApi from "../utils/axiosInstance.utils";
@@ -8,6 +8,8 @@ const EditProduct = () => {
     const { id } = useParams();
     const api = useApi();
     const navigate = useNavigate();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isLoadingProduct, setIsLoadingProduct] = useState(true);
 
     const {
         register,
@@ -19,6 +21,7 @@ const EditProduct = () => {
     useEffect(() => {
         const getProduct = async () => {
             try {
+                setIsLoadingProduct(true);
                 const res = await api.get(`/api/products/${id}`);
 
                 const product = res.data.product;
@@ -32,6 +35,8 @@ const EditProduct = () => {
                 });
             } catch (error) {
                 console.log(error);
+            } finally {
+                setIsLoadingProduct(false);
             }
         };
 
@@ -40,7 +45,7 @@ const EditProduct = () => {
 
     const onSubmit = async (data) => {
         try {
-
+            setIsSubmitting(true);
             await api.put(`/api/products/update/${id}`, data);
 
             navigate("/home");
@@ -50,8 +55,21 @@ const EditProduct = () => {
                 error.response?.data?.message ||
                 "Failed to delete product"
             );
+        } finally {
+            setIsSubmitting(false);
         }
     };
+
+    if (isLoadingProduct) {
+        return (
+            <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+                <div className="text-center">
+                    <div className="h-10 w-10 mx-auto border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
+                    <p className="mt-4 text-gray-600">Loading product details...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
@@ -196,9 +214,10 @@ const EditProduct = () => {
                     {/* Submit */}
                     <button
                         type="submit"
-                        className="w-full bg-black text-white rounded-lg py-3 font-medium hover:bg-gray-800 transition"
+                        disabled={isSubmitting}
+                        className="w-full bg-black text-white rounded-lg py-3 font-medium hover:bg-gray-800 transition disabled:cursor-not-allowed disabled:opacity-70"
                     >
-                        Update Product
+                        {isSubmitting ? "Updating Product..." : "Update Product"}
                     </button>
 
                 </form>

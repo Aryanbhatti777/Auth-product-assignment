@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 
 import { AuthContext } from "../context/AuthContext";
 import useApi from "../utils/axiosInstance.utils";
@@ -10,23 +10,30 @@ export default function Navbar() {
     
   const { user, setUser, setAccessToken, loading } = useContext(AuthContext);
   
-  const navigate = useNavigate()
-    const Logout = async () => {
-    
-            try {
-                
-                await api.post("/api/auth/logout")
-                setUser(null);
-                setAccessToken(null);
-    
-                navigate("/",{replace: true})
-            } catch (error) {
-                
-            }
+  const navigate = useNavigate();
+
+  const Logout = async () => {
+    try {
+      await api.post("/api/auth/logout");
+      setUser(null);
+      setAccessToken(null);
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.log(error);
     }
-    
-  
-  if(loading) return <p className="text-center">Loading...</p>
+  };
+
+  if (loading && !user) {
+    return (
+      <nav className="border-b border-gray-200 bg-white">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <div className="h-6 w-24 animate-pulse rounded bg-gray-200"></div>
+          <div className="h-9 w-28 animate-pulse rounded bg-gray-200"></div>
+        </div>
+      </nav>
+    );
+  }
+
   return (
     <nav className="border-b border-gray-200 bg-white">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -39,15 +46,12 @@ export default function Navbar() {
           MyApp
         </Link>
 
-        
-
         {/* Auth */}
         <div className="flex items-center gap-3">
           {(
             <>
               {user ? (
                 <>
-                
                   <span className="hidden text-sm font-medium text-gray-700 sm:block">
                     {user.name || user.email}
                   </span>

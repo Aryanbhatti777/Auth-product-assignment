@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import useApi from "../utils/axiosInstance.utils";
 import { useNavigate } from "react-router";
 
 const CreateProduct = () => {
     const api = useApi();
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const {
         register,
@@ -15,6 +17,7 @@ const CreateProduct = () => {
     const navigate = useNavigate();
     const onSubmit = async (data) => {
         try {
+            setIsSubmitting(true);
             const formData = new FormData();
 
             formData.append("name", data.name);
@@ -29,8 +32,12 @@ const CreateProduct = () => {
             console.log(res.data);
 
             reset();
+            navigate("/home");
         } catch (error) {
             console.log(error);
+            alert(error.response?.data?.message || "Failed to create product");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -210,9 +217,10 @@ const CreateProduct = () => {
                     {/* Submit */}
                     <button
                         type="submit"
-                        className="w-full bg-black text-white rounded-lg py-3 font-medium hover:bg-gray-800 transition"
+                        disabled={isSubmitting}
+                        className="w-full bg-black text-white rounded-lg py-3 font-medium hover:bg-gray-800 transition disabled:cursor-not-allowed disabled:opacity-70"
                     >
-                        Create Product
+                        {isSubmitting ? "Creating Product..." : "Create Product"}
                     </button>
 
                 </form>
